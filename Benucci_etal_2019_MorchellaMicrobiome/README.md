@@ -9,9 +9,9 @@ Gian Maria Niccolò Benucci1*, Reid Longley1*, Zhang Peng2, Zhao Qi2, Fuqiang Yu
 3 Gourmet Mushrooms Inc., Scottville MI, USA<br>
 
 (✉) Corresponding Authors Contact:<br>
-Fuqiang Yu (outdoor morel cultivation requests) - fqy*at)mail.kib.ac.cn<br>
+Fuqiang Yu (outdoor morel cultivation requests) - fqy(at)mail.kib.ac.cn<br>
 Gregory Bonito (all other requests) - bonito(at)msu.edu<br>
-(*) these authors equally contributed to this study.<br>
+\(*) these authors equally contributed to this study.<br>
  
 ORCID ID - Benucci GMN https://orcid.org/0000-0003-1589-947X<br>
 ORCID ID - Bonito G  https://orcid.org/0000-0002-7262-8978<br>
