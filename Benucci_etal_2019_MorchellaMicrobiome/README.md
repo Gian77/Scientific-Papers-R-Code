@@ -2,11 +2,11 @@
 
 ## Microbial Communities Associated with Morel (*Morchella* spp.) Mushrooms Cultivated Outdoors
 
-Gian Maria Niccolò Benucci<sup>1*<sup>, Reid Longley<sup>1*<sup>, Zhang Peng<sup>2<sup>, Zhao Qi<sup>2<sup>, Fuqiang Yu<sup>2✉<sup>, Gregory Bonito<sup>1✉<sup>
+Gian Maria Niccolò Benucci<sup>1*</sup>, Reid Longley<sup>1*</sup>, Zhang Peng<sup>2</sup>, Zhao Qi<sup>2</sup>, Fuqiang Yu<sup>2✉</sup>, Gregory Bonito<sup>1✉</sup>
 
-<sup>1<sup> Michigan State University, East Lansing MI, 48824, USA<br>
-<sup>2<sup> Key Laboratory for East Asia Biodiversity and Biogeography, Kunming Institute of Botany, Chinese Academy of Sciences, Yunnan, China<br>
-<sup>3<sup> Gourmet Mushrooms Inc., Scottville MI, USA<br>
+<sup>1</sup> Michigan State University, East Lansing MI, 48824, USA<br>
+<sup>2</sup> Key Laboratory for East Asia Biodiversity and Biogeography, Kunming Institute of Botany, Chinese Academy of Sciences, Yunnan, China<br>
+<sup>3</sup> Gourmet Mushrooms Inc., Scottville MI, USA<br>
 
 (✉) Corresponding Authors Contact:<br>
 Fuqiang Yu (outdoor morel cultivation requests) - fqy(at)mail.kib.ac.cn<br>
