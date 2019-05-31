@@ -1,6 +1,6 @@
 ## Code associated with the manuscript titled:
 
-## Microbial Communities Associated with Morel (*Morchella* spp.) Mushrooms Cultivated Outdoors
+## Microbial communities associated with morel (_Morchella sextelata_) mushrooms cultivated outdoors
 
 Gian Maria Niccolò Benucci<sup>1*</sup>, Reid Longley<sup>1*</sup>, Zhang Peng<sup>2</sup>, Zhao Qi<sup>2</sup>, Fuqiang Yu<sup>2✉</sup>, Gregory Bonito<sup>1✉</sup>
 
