@@ -1,4 +1,4 @@
-# my.vennNico.R modified form limma package
+# my_venn_diag.R modified form limma package
 
 venn_Gian <- function (object, include = "both", names = NULL, mar = rep(1,
                   4), cex = c(1.5, 1, 0.7), lwd = 1, circle.col = NULL, counts.col = NULL,
