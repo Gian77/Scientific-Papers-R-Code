@@ -23,15 +23,15 @@ library(ape)
 getwd(); dir(); ls() 
 
 # Import fungal ITS data ------------------------------------------------------------------------------
-otus_ITS_uparse_R1 <- read.delim("analysis_ITS/otu_table_ITS_UPARSE_R1.txt",row.names=1) 
+otus_ITS_uparse_R1 <- read.delim("otu_table_ITS_UPARSE_R1.txt",row.names=1) 
 otus_phy_ITS_uparse_R1 <-otu_table(otus_ITS_uparse_R1, taxa_are_rows = TRUE)
 
-metadata_ITS_uparse_R1 <-read.delim("analysis_ITS/mapping_ITS.txt", row.names=1, header=TRUE, sep="\t")
+metadata_ITS_uparse_R1 <-read.delim("mapping_ITS.txt", row.names=1, header=TRUE, sep="\t")
 metadata_phy_ITS_uparse_R1 <-sample_data(metadata_ITS_uparse_R1)
 
-taxonomy_ITS_uparse_R1_cons <-read.delim("analysis_ITS/outputs_UPARSE_R1/consensus_taxonomy.txt", header=TRUE, row.names=1)
+taxonomy_ITS_uparse_R1_cons <-read.delim("taxonomy_ITS_consensus.txt", header=TRUE, row.names=1)
 head(taxonomy_ITS_uparse_R1_cons)
-taxonomy_ITS_uparse_R1_RDP <-read.delim("analysis_ITS/outputs_UPARSE_R1/otu_taxonomy_rdp_final.txt", header=TRUE, row.names=1)
+taxonomy_ITS_uparse_R1_RDP <-read.delim("taxonomy_ITS_RDP.txt", header=TRUE, row.names=1)
 # Taxonomy_ITS_uparse_R1_RDP <- subset(taxonomy_ITS_uparse_R1_RDP, 
 # select=c(Kingdom, Phylum, Class, Order, Family, Genus, Species))
 identical(rownames(taxonomy_ITS_uparse_R1_cons), rownames(taxonomy_ITS_uparse_R1_RDP))
@@ -42,7 +42,7 @@ taxonomy_ITS_uparse_R1_cons$RDP <- taxonomy_ITS_uparse_R1_RDP$RDP
 head(taxonomy_ITS_uparse_R1_cons)
 taxonomy_phy_ITS_uparse_R1_cons <- tax_table(as.matrix(taxonomy_ITS_uparse_R1_cons))
 
-otus_seq_ITS_uparse_R1 <- readDNAStringSet("analysis_ITS/otus_R1.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
+otus_seq_ITS_uparse_R1 <- readDNAStringSet("otus_R1_ITS.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
 
 physeq_obj_ITS_uparse_R1 <- phyloseq(otus_phy_ITS_uparse_R1, 
                                      metadata_phy_ITS_uparse_R1,
@@ -648,13 +648,13 @@ upset(otu_fungi_ev_pa,
 # Import fungal 18S data (primers NS31_f3, AML2_f3) ---------------------------------------------------
 # hereafter calles SSU dataset for simplicity
 
-otus_SSU_uparse_R1 <- read.delim("analysis_SSU/otu_table_ITS_UPARSE_R1.txt",row.names=1) 
+otus_SSU_uparse_R1 <- read.delim("otu_table_SSU_UPARSE_R1.txt",row.names=1) 
 otus_phy_SSU_uparse_R1 <-otu_table(otus_SSU_uparse_R1, taxa_are_rows = TRUE)
 
-metadata_SSU_uparse_R1 <-read.delim("analysis_SSU/mapping_SSU.txt", row.names=1, header=TRUE, sep="\t")
+metadata_SSU_uparse_R1 <-read.delim("mapping_SSU.txt", row.names=1, header=TRUE, sep="\t")
 metadata_phy_SSU_uparse_R1 <-sample_data(metadata_SSU_uparse_R1)
 
-taxonomy_SSU_uparse_R1 <-read.csv("analysis_SSU/otu_SSU_R1_SILVA_filt.csv", header=TRUE, row.names=1)
+taxonomy_SSU_uparse_R1 <-read.csv("taxonomy_SSU_SILVA.csv", header=TRUE, row.names=1)
 head(taxonomy_SSU_uparse_R1)
 
 # filtering SILVA taxonomy using .07 confidence value at each Rank ------------------------------------
@@ -670,7 +670,7 @@ rownames(taxonomy_SSU) <- rownames(taxonomy_SSU_uparse_R1)
 taxonomy_phy_SSU_uparse_R1 <- tax_table(as.matrix(taxonomy_SSU))
 head(taxonomy_phy_SSU_uparse_R1)
 
-otus_seq_SSU_uparse_R1 <- readDNAStringSet("analysis_SSU/otus_R1.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
+otus_seq_SSU_uparse_R1 <- readDNAStringSet("otus_R1_SSU.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
 
 physeq_obj_SSU_uparse_R1 <- phyloseq(otus_phy_SSU_uparse_R1, 
                                      metadata_phy_SSU_uparse_R1,
@@ -723,17 +723,17 @@ write.dna(refseq(physeq_SSU_Glomeromycota), format="fasta", colsep="", file="tax
 # Import fungal 18S data (Endo18S-1F, NS6_f4) ---------------------------------------------------------
 # hereafter calles 18S dataset for simplicity
 
-otus_18S_uparse_R1 <- read.delim("analysis_18S/otu_table_ITS_UPARSE_R1.txt",row.names=1) 
+otus_18S_uparse_R1 <- read.delim("otu_table_18S_UPARSE_R1.txt",row.names=1) 
 otus_phy_18S_uparse_R1 <-otu_table(otus_18S_uparse_R1, taxa_are_rows = TRUE)
 
-metadata_18S_uparse_R1 <-read.delim("analysis_18S/mapping_18S.txt", row.names=1, header=TRUE, sep="\t")
+metadata_18S_uparse_R1 <-read.delim("mapping_18S.txt", row.names=1, header=TRUE, sep="\t")
 metadata_phy_18S_uparse_R1 <-sample_data(metadata_18S_uparse_R1)
 
-taxonomy_18S_uparse_R1 <-read.csv("analysis_18S/otu_R1_SILVA_filt.csv", header=TRUE, row.names=1)
+taxonomy_18S_uparse_R1 <-read.csv("taxonomy_18S_SILVA.csv", header=TRUE, row.names=1)
 taxonomy_phy_18S_uparse_R1 <- tax_table(as.matrix(taxonomy_18S_uparse_R1))
 taxonomy_phy_18S_uparse_R1
 
-otus_seq_18S_uparse_R1 <- readDNAStringSet("analysis_18S/otus_R1.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
+otus_seq_18S_uparse_R1 <- readDNAStringSet("otus_R1_18S.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
 otus_seq_18S_uparse_R1
 
 physeq_obj_18S_uparse_R1 <- phyloseq(otus_phy_18S_uparse_R1, 
@@ -746,6 +746,7 @@ str(physeq_obj_18S_uparse_R1)
 tax_table(physeq_obj_18S_uparse_R1)
 sample_data(physeq_obj_18S_uparse_R1)
 
+# exporting datasets ----------------------------------------------------------------------------------
 write.csv(tax_table(physeq_obj_18S_uparse_R1), "taxonomy_physeq_18S_uparse_R1.csv")
 write.dna(refseq(physeq_obj_18S_uparse_R1), format="fasta", colsep="", file="sequences_physeq_18S_uparse_R1.fasta")
 
@@ -764,8 +765,6 @@ taxonomy_18S <- cbind(Kingdom, Phylum, Class, Order, Family, Genus)
 rownames(taxonomy_18S) <- rownames(taxonomy_18S_uparse_R1)
 taxonomy_phy_18S_uparse_R1 <- tax_table(as.matrix(taxonomy_18S))
 head(taxonomy_phy_18S_uparse_R1)
-
-otus_seq_18S_uparse_R1 <- readDNAStringSet("analysis_18S/otus_R1.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
 
 physeq_obj_18S_uparse_R1 <- phyloseq(otus_phy_18S_uparse_R1, 
                                      metadata_phy_18S_uparse_R1,
@@ -860,14 +859,14 @@ baloon_18S
 
 # ****************************************************************-------------------------------------
 # Importing bacterial 16S data ------------------------------------------------------------------------
-otus_16s_uparse <- read.delim("analysis_16S/otu_table_16S_UPARSE.txt",row.names=1) 
+otus_16s_uparse <- read.delim("otu_table_16S_UPARSE.txt",row.names=1) 
 otus_phy_16s_uparse <- otu_table(otus_16s_uparse, taxa_are_rows = TRUE)
 
-metadata_16s_uparse <- read.delim("analysis_16S/mapping_16s.txt", row.names=1, header=TRUE, sep="\t")
+metadata_16s_uparse <- read.delim("mapping_16s.txt", row.names=1, header=TRUE, sep="\t")
 metadata_phy_16s_uparse <- sample_data(metadata_16s_uparse)
 
 # importing RDP taxonomy ------------------------------------------------------------------------------
-taxonomy_16s_uparse_RDP <- read.delim("analysis_16S/taxonomy_assignments/otus_taxonomy_RDP.txt", header = TRUE, row.names = 1)
+taxonomy_16s_uparse_RDP <- read.delim("taxonomy_16S_RDP.txt", header = TRUE, row.names = 1)
 head(taxonomy_16s_uparse_RDP)
 
 ifelse(taxonomy_16s_uparse_RDP$D_Score>=0.7, paste(taxonomy_16s_uparse_RDP$Domain), NA) -> Kingdom
@@ -881,7 +880,7 @@ rownames(taxonomy) <- rownames(taxonomy_16s_uparse_RDP)
 taxonomy_phy_16s_uparse_RDP <- tax_table(as.matrix(taxonomy))
 head(taxonomy_phy_16s_uparse_RDP)
 
-zotus_seq_16s_uparse <- readDNAStringSet("analysis_16S/otus.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
+zotus_seq_16s_uparse <- readDNAStringSet("otus_merged_16S.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
 
 physeq_obj_16s_uparse <- phyloseq(otus_phy_16s_uparse, 
                                   metadata_phy_16s_uparse,
@@ -922,7 +921,7 @@ library("dplyr")
 library("tidyr")
 library("stringr")
 
-connect_16s_uparse_SILVA <-readLines("analysis_16S/taxonomy_assignments/otu_taxonomy.sintax")
+connect_16s_uparse_SILVA <-readLines("taxonomy_16S_SILVA.txt")
 connect_16s_uparse_SILVA <- gsub("\tk:.*\t\\+\tk:", ",", connect_16s_uparse_SILVA) 
 head(connect_16s_uparse_SILVA)
 str(connect_16s_uparse_SILVA)
