@@ -955,3 +955,15 @@ plot(deg.dist1, type='b', ylab="Frequency", xlab="Degree", main="Degree Distribu
 clustering_coeff <- transitivity(plot_spiec_prok, type = "global")
 clustering_coeff
 
+                  
+# _______________ IMPORTANT NOTE ___________________-----------------
+
+ # To relabel the Origin factor with the correct scientific terminology 
+ # we used the code below and then we re-sun the R scripts 
+sample_data(physeq_prokaryote_mSeq)$Origin <- c(rep("Pileus", 10),rep("Soil",10), rep("Stipe",10)) 
+sample_data(physeq_prokaryote_mSeq)$Origin <- factor(sample_data(physeq_prokaryote_mSeq)$Origin,levels=c("Pileus","Stipe","Soil"))
+                  
+                  
+                  
+                  
+                  
