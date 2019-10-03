@@ -4,7 +4,7 @@
 # Authors:      Gian Maria Niccolò Benucci, Delaney Burnard, Lara D. Shepherd, Gregory Bonito,  Andrew Munkacsi
 # Affiliation:  Michigan State University, Victoria University of Wellington, Museum of New Zealand Te Papa Tongarewa
 # Journal:      Forntiers in Microbiology
-# Date:         July 19, 2019
+# Date:         October 3, 2019
 # *************************************************************************************************************************** -----
 
 # ___________WORKING ENVIRONMENT SETUP _____________ ---------------------------------------------------
@@ -22,16 +22,30 @@ library(ape)
 # IMPORTING DATASETS -----------------------------------------------------------------------------------
 getwd(); dir(); ls() 
 
+# >>> COLOR PALETTES --------------------------------------------------------------------------------------
+
+palette_fungi = c("#781156","#A51876","#D21E96","#E43FAD","#EA6CC0","#F098D3","#114578","#185EA5",
+                  "#1E78D2","#3F91E4","#6CABEA","#98C4F0","#117878","#18A5A5","#3FE4E4","#6CEAEA",
+                  "#98F0F0", "#117845","#18A55E","#1ED278","#3FE491","#6CEAAB","#98F0C4","#787811",
+                  "#A5A518","#D2D21E","#E4E43F","#EAEA6C","#F0F098","#F7F7C5","#784511","#A55E18",
+                  "#D2781E","#E4913F","#EAAB6C","#F0C498","#781122","#A5182F","#D21E2C")
+
+palette_bact = c("#781156","#A51876","#D21E96","#E43FAD","#EA6CC0","#F098D3","#114578","#185EA5",
+                 "#1E78D2","#3F91E4","#6CABEA","#98C4F0","#117878","#18A5A5","#3FE4E4","#6CEAEA",
+                 "#98F0F0", "#117845","#18A55E","#1ED278","#3FE491","#6CEAAB","#98F0C4","#787811",
+                 "#A5A518","#D2D21E","#E4E43F","#EAEA6C","#D21E2C")
+
+
 # Import fungal ITS data ------------------------------------------------------------------------------
-otus_ITS_uparse_R1 <- read.delim("otu_table_ITS_UPARSE_R1.txt",row.names=1) 
+otus_ITS_uparse_R1 <- read.delim("analysis_ITS/otu_table_ITS_UPARSE_R1.txt",row.names=1) 
 otus_phy_ITS_uparse_R1 <-otu_table(otus_ITS_uparse_R1, taxa_are_rows = TRUE)
 
-metadata_ITS_uparse_R1 <-read.delim("mapping_ITS.txt", row.names=1, header=TRUE, sep="\t")
+metadata_ITS_uparse_R1 <-read.delim("analysis_ITS/mapping_ITS.txt", row.names=1, header=TRUE, sep="\t")
 metadata_phy_ITS_uparse_R1 <-sample_data(metadata_ITS_uparse_R1)
 
-taxonomy_ITS_uparse_R1_cons <-read.delim("taxonomy_ITS_consensus.txt", header=TRUE, row.names=1)
+taxonomy_ITS_uparse_R1_cons <-read.delim("analysis_ITS/outputs_UPARSE_R1/consensus_taxonomy.txt", header=TRUE, row.names=1)
 head(taxonomy_ITS_uparse_R1_cons)
-taxonomy_ITS_uparse_R1_RDP <-read.delim("taxonomy_ITS_RDP.txt", header=TRUE, row.names=1)
+taxonomy_ITS_uparse_R1_RDP <-read.delim("analysis_ITS/outputs_UPARSE_R1/otu_taxonomy_rdp_final.txt", header=TRUE, row.names=1)
 # Taxonomy_ITS_uparse_R1_RDP <- subset(taxonomy_ITS_uparse_R1_RDP, 
 # select=c(Kingdom, Phylum, Class, Order, Family, Genus, Species))
 identical(rownames(taxonomy_ITS_uparse_R1_cons), rownames(taxonomy_ITS_uparse_R1_RDP))
@@ -42,7 +56,7 @@ taxonomy_ITS_uparse_R1_cons$RDP <- taxonomy_ITS_uparse_R1_RDP$RDP
 head(taxonomy_ITS_uparse_R1_cons)
 taxonomy_phy_ITS_uparse_R1_cons <- tax_table(as.matrix(taxonomy_ITS_uparse_R1_cons))
 
-otus_seq_ITS_uparse_R1 <- readDNAStringSet("otus_R1_ITS.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
+otus_seq_ITS_uparse_R1 <- readDNAStringSet("analysis_ITS/otus_R1.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
 
 physeq_obj_ITS_uparse_R1 <- phyloseq(otus_phy_ITS_uparse_R1, 
                                      metadata_phy_ITS_uparse_R1,
@@ -122,6 +136,7 @@ physeq_ITS_Endogonales
 otu_table(physeq_ITS_Endogonales)
 tax_table(physeq_ITS_Endogonales)
 
+sum(taxa_sums(physeq_ITS_Endogonales))
 sum(taxa_sums(physeq_ITS_Endogonales))*100/sum(taxa_sums(physeq_obj_ITS_uparse_R1))
 
 # >>> INSPECT LIBRARY SIZES ----------------------------------------------------------------------------
@@ -193,10 +208,8 @@ dim(otu_fungi_ITS_uparse_R1)
 metadata_fungi_ITS_uparse_R1
 
 # *** FIGURE S2 - rarefaction curves -----------------------------------------------------------------
-palette12 <- c("red","brown","orange","yellow1","green",
-               "cyan","blue","deeppink","grey","black") #"violet","yellowgreen",
-
-metadata_fungi_ITS_uparse_R1$color <- palette12
+ metadata_fungi_ITS_uparse_R1$color <- c("red","brown","orange","yellow1","green",
+                                        "cyan","blue","deeppink","grey","black") 
 metadata_fungi_ITS_uparse_R1
 
 rarecurve(t(otu_fungi_ITS_uparse_R1), col = metadata_fungi_ITS_uparse_R1$color, label = FALSE, 
@@ -254,12 +267,12 @@ barplot_fungi_uparse_R1 = ggplot(otu_fungi_uparse_R1_phylum, aes(x = Cepname, y 
   theme_classic() +
   coord_flip() +
   labs(title="Fungi ITS", x="", y = "Relative Abundance") +
-  scale_fill_manual(values = palette50) +
+  scale_fill_manual(values = palette_fungi) +
   #facet_grid(~Plant, scales = "free_x", space="free_x") +
   theme(legend.key.height = unit(0.15, "cm"), legend.key.width = unit(0.25, "cm")) +
   theme(legend.title = element_text(size = 8, face = "bold"), legend.text = element_text(size = 7)) +
   theme(strip.text.x = element_text(size = 8, face = "bold")) +
-  theme(axis.text.x = element_text(size = 10, angle = 0, vjust = 0.5, hjust = 1)) +
+  theme(axis.text.x = element_text(size = 10, angle = 0, vjust = 0.5, hjust = 0.5)) +
   theme(plot.title = element_text(size = 14, hjust = 0.5)) +
   #theme(axis.ticks.x = element_blank()) +
   theme(axis.title = element_text(angle = 0, size = 8, face = "bold")) +
@@ -639,25 +652,28 @@ upset(otu_fungi_ev_pa,
       number.angles = 0, 
       point.size = 2, 
       line.size = 1,
-      mainbar.y.label = "Intersections", 
-      sets.x.label = "OTU number", 
-      text.scale = c(1, 1, 1, 1, 1, 1),
-      empty.intersections = "on")
+      mainbar.y.label = "OTU number", 
+      sets.x.label = "OTU number",
+      text.scale = c(1.3, 1.3, 1, 1, 1, 0.75),
+      #text.scale = c(1, 1, 1, 1, 1, 1),
+      empty.intersections = "on") -> upset_fungi
 
-# ****************************************************************--------------------------------------
-# Import fungal 18S data (primers NS31_f3, AML2_f3) ---------------------------------------------------
+upset_fungi
+
+# *******************************************************************************************---
+# Import fungal 18S data (generic primers NS31_f3, AML2_f3) ------------------------------------
 # hereafter calles SSU dataset for simplicity
 
-otus_SSU_uparse_R1 <- read.delim("otu_table_SSU_UPARSE_R1.txt",row.names=1) 
+otus_SSU_uparse_R1 <- read.delim("analysis_SSU/otu_table_ITS_UPARSE_R1.txt",row.names=1) 
 otus_phy_SSU_uparse_R1 <-otu_table(otus_SSU_uparse_R1, taxa_are_rows = TRUE)
 
-metadata_SSU_uparse_R1 <-read.delim("mapping_SSU.txt", row.names=1, header=TRUE, sep="\t")
+metadata_SSU_uparse_R1 <-read.delim("analysis_SSU/mapping_SSU.txt", row.names=1, header=TRUE, sep="\t")
 metadata_phy_SSU_uparse_R1 <-sample_data(metadata_SSU_uparse_R1)
 
-taxonomy_SSU_uparse_R1 <-read.csv("taxonomy_SSU_SILVA.csv", header=TRUE, row.names=1)
+taxonomy_SSU_uparse_R1 <-read.csv("analysis_SSU/otu_SSU_R1_SILVA_filt.csv", header=TRUE, row.names=1)
 head(taxonomy_SSU_uparse_R1)
 
-# filtering SILVA taxonomy using .07 confidence value at each Rank ------------------------------------
+# filtering SILVA taxonomy using .07 confidence value at each Rank --------------------------------
 ifelse(taxonomy_SSU_uparse_R1$conf>=0.7, paste(taxonomy_SSU_uparse_R1$Kingdom), NA) -> Kingdom
 ifelse(taxonomy_SSU_uparse_R1$conf.1>=0.7, paste(taxonomy_SSU_uparse_R1$Phylum), NA) -> Phylum
 ifelse(taxonomy_SSU_uparse_R1$conf.2>=0.7, paste(taxonomy_SSU_uparse_R1$Class), NA) -> Class
@@ -670,7 +686,7 @@ rownames(taxonomy_SSU) <- rownames(taxonomy_SSU_uparse_R1)
 taxonomy_phy_SSU_uparse_R1 <- tax_table(as.matrix(taxonomy_SSU))
 head(taxonomy_phy_SSU_uparse_R1)
 
-otus_seq_SSU_uparse_R1 <- readDNAStringSet("otus_R1_SSU.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
+otus_seq_SSU_uparse_R1 <- readDNAStringSet("analysis_SSU/otus_R1.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
 
 physeq_obj_SSU_uparse_R1 <- phyloseq(otus_phy_SSU_uparse_R1, 
                                      metadata_phy_SSU_uparse_R1,
@@ -719,21 +735,21 @@ sum(taxa_sums(physeq_SSU_Glomeromycota))*100/sum(taxa_sums(physeq_obj_SSU_uparse
 # extracting sequences for phylogeny ------------------------------------------------------------------
 write.dna(refseq(physeq_SSU_Glomeromycota), format="fasta", colsep="", file="taxa_glomeromycota_all.fasta")
 
-# ****************************************************************-------------------------------------
-# Import fungal 18S data (Endo18S-1F, NS6_f4) ---------------------------------------------------------
+# **************************************************************************************************---
+# Import fungal 18S data (Endogone Endo18S-1F, NS6_f4) ------------------------------------------------
 # hereafter calles 18S dataset for simplicity
 
-otus_18S_uparse_R1 <- read.delim("otu_table_18S_UPARSE_R1.txt",row.names=1) 
+otus_18S_uparse_R1 <- read.delim("analysis_18S/otu_table_ITS_UPARSE_R1.txt",row.names=1) 
 otus_phy_18S_uparse_R1 <-otu_table(otus_18S_uparse_R1, taxa_are_rows = TRUE)
 
-metadata_18S_uparse_R1 <-read.delim("mapping_18S.txt", row.names=1, header=TRUE, sep="\t")
+metadata_18S_uparse_R1 <-read.delim("analysis_18S/mapping_18S.txt", row.names=1, header=TRUE, sep="\t")
 metadata_phy_18S_uparse_R1 <-sample_data(metadata_18S_uparse_R1)
 
-taxonomy_18S_uparse_R1 <-read.csv("taxonomy_18S_SILVA.csv", header=TRUE, row.names=1)
+taxonomy_18S_uparse_R1 <-read.csv("analysis_18S/otu_R1_SILVA_filt.csv", header=TRUE, row.names=1)
 taxonomy_phy_18S_uparse_R1 <- tax_table(as.matrix(taxonomy_18S_uparse_R1))
 taxonomy_phy_18S_uparse_R1
 
-otus_seq_18S_uparse_R1 <- readDNAStringSet("otus_R1_18S.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
+otus_seq_18S_uparse_R1 <- readDNAStringSet("analysis_18S/otus_R1.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
 otus_seq_18S_uparse_R1
 
 physeq_obj_18S_uparse_R1 <- phyloseq(otus_phy_18S_uparse_R1, 
@@ -746,7 +762,6 @@ str(physeq_obj_18S_uparse_R1)
 tax_table(physeq_obj_18S_uparse_R1)
 sample_data(physeq_obj_18S_uparse_R1)
 
-# exporting datasets ----------------------------------------------------------------------------------
 write.csv(tax_table(physeq_obj_18S_uparse_R1), "taxonomy_physeq_18S_uparse_R1.csv")
 write.dna(refseq(physeq_obj_18S_uparse_R1), format="fasta", colsep="", file="sequences_physeq_18S_uparse_R1.fasta")
 
@@ -765,6 +780,8 @@ taxonomy_18S <- cbind(Kingdom, Phylum, Class, Order, Family, Genus)
 rownames(taxonomy_18S) <- rownames(taxonomy_18S_uparse_R1)
 taxonomy_phy_18S_uparse_R1 <- tax_table(as.matrix(taxonomy_18S))
 head(taxonomy_phy_18S_uparse_R1)
+
+otus_seq_18S_uparse_R1 <- readDNAStringSet("analysis_18S/otus_R1.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
 
 physeq_obj_18S_uparse_R1 <- phyloseq(otus_phy_18S_uparse_R1, 
                                      metadata_phy_18S_uparse_R1,
@@ -857,16 +874,16 @@ baloon_18S <- ggplot(otu_table_18S_melted, aes(x = Species, y = OTU_ID)) +
 
 baloon_18S
 
-# ****************************************************************-------------------------------------
+# **************************************************************************************************---
 # Importing bacterial 16S data ------------------------------------------------------------------------
-otus_16s_uparse <- read.delim("otu_table_16S_UPARSE.txt",row.names=1) 
+otus_16s_uparse <- read.delim("analysis_16S/otu_table_16S_UPARSE.txt",row.names=1) 
 otus_phy_16s_uparse <- otu_table(otus_16s_uparse, taxa_are_rows = TRUE)
 
-metadata_16s_uparse <- read.delim("mapping_16s.txt", row.names=1, header=TRUE, sep="\t")
+metadata_16s_uparse <- read.delim("analysis_16S/mapping_16s.txt", row.names=1, header=TRUE, sep="\t")
 metadata_phy_16s_uparse <- sample_data(metadata_16s_uparse)
 
 # importing RDP taxonomy ------------------------------------------------------------------------------
-taxonomy_16s_uparse_RDP <- read.delim("taxonomy_16S_RDP.txt", header = TRUE, row.names = 1)
+taxonomy_16s_uparse_RDP <- read.delim("analysis_16S/taxonomy_assignments/otus_taxonomy_RDP.txt", header = TRUE, row.names = 1)
 head(taxonomy_16s_uparse_RDP)
 
 ifelse(taxonomy_16s_uparse_RDP$D_Score>=0.7, paste(taxonomy_16s_uparse_RDP$Domain), NA) -> Kingdom
@@ -880,7 +897,7 @@ rownames(taxonomy) <- rownames(taxonomy_16s_uparse_RDP)
 taxonomy_phy_16s_uparse_RDP <- tax_table(as.matrix(taxonomy))
 head(taxonomy_phy_16s_uparse_RDP)
 
-zotus_seq_16s_uparse <- readDNAStringSet("otus_merged_16S.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
+zotus_seq_16s_uparse <- readDNAStringSet("analysis_16S/otus.fasta", format="fasta", seek.first.rec=TRUE, use.names=TRUE)
 
 physeq_obj_16s_uparse <- phyloseq(otus_phy_16s_uparse, 
                                   metadata_phy_16s_uparse,
@@ -921,7 +938,7 @@ library("dplyr")
 library("tidyr")
 library("stringr")
 
-connect_16s_uparse_SILVA <-readLines("taxonomy_16S_SILVA.txt")
+connect_16s_uparse_SILVA <-readLines("analysis_16S/taxonomy_assignments/otu_taxonomy.sintax")
 connect_16s_uparse_SILVA <- gsub("\tk:.*\t\\+\tk:", ",", connect_16s_uparse_SILVA) 
 head(connect_16s_uparse_SILVA)
 str(connect_16s_uparse_SILVA)
@@ -953,7 +970,7 @@ remove_taxa = function(physeq, badTaxa){
 physeq_prokaryote <- remove_taxa(physeq_prokaryote, otu_chlo_mito)
 physeq_prokaryote
 
-# evaluating cloroplast and mitocondrion abundance 
+# evaluating cloroplast and mitocondrion abundance according to SILVA db
 physeq_prokaryote_mito <- otu_table(physeq_obj_16s_uparse)[otu_chlo_mito, ]
 sum(taxa_sums(physeq_prokaryote_mito))
 sum(taxa_sums(physeq_prokaryote_mito))/sum(taxa_sums(physeq_obj_16s_uparse))*100
@@ -1002,7 +1019,11 @@ sample_data(physeq_obj_16s_uparse_R1_filt)
 # add a avraible with plant names abbreviations -------------------------------------------------------
 library("vegan")
 
-sample_data(physeq_obj_16s_uparse_R1_filt)$Cepname <- plant_cepnames
+ordered_ceps_16s <- c("Lycocern", "Lycofast","Phlevari","Lycodiff","Lycolate",
+                      "Lycovolu","Lycodeut","Lycoscar", "Selakrau","Hupeaust")
+
+sample_data(physeq_obj_16s_uparse_R1_filt)$Cepname <- ordered_ceps_16s
+sample_data(physeq_obj_16s_uparse_R1_filt)
 
 sample_data(physeq_obj_16s_uparse_R1_filt)$Plant <- factor(sample_data(physeq_obj_16s_uparse_R1_filt)$Plant,
                                                            levels=c("Lycopodium_deuterodensum",
@@ -1036,8 +1057,10 @@ metadata_bact_16s_uparse_R1 <- as.data.frame(as.matrix(sample_data(physeq_obj_16
 dim(otu_bact_16s_uparse_R1)
 metadata_bact_16s_uparse_R1
 
-metadata_bact_16s_uparse_R1$color <- palette12
+metadata_bact_16s_uparse_R1$color <- c("blue", "orange", "cyan" ,"deeppink", "green",
+                                       "red","yellow1","grey","black","brown")
 metadata_bact_16s_uparse_R1
+
 
 # *** FIGURE S2 - rarefaction curves ------------------------------------------------------------------
 rarecurve(t(otu_bact_16s_uparse_R1), col = metadata_bact_16s_uparse_R1$color, label = FALSE, 
@@ -1057,6 +1080,7 @@ physeq_bact_uparse_R1_ev = rarefy_even_depth(physeq_obj_16s_uparse_R1_filt, samp
                                              rngseed = FALSE, replace = TRUE, trimOTUs = TRUE, verbose = TRUE) 
 otu_table(physeq_bact_uparse_R1_ev) <- otu_table(physeq_bact_uparse_R1_ev)[which(rowSums(otu_table(physeq_bact_uparse_R1_ev)) >= 1),]
 physeq_bact_uparse_R1_ev
+sample_data(physeq_bact_uparse_R1_ev)
 
 colSums(otu_table(physeq_bact_uparse_R1_ev))
 any(taxa_sums(physeq_bact_uparse_R1_ev) == 0)
@@ -1087,12 +1111,12 @@ barplot_bact_uparse_R1 = ggplot(otu_bact_uparse_R1_phylum, aes(x = Cepname, y = 
   theme_classic() +
   coord_flip() +
   labs(title="Bacteria 16S", x="", y = "Relative Abundance") +
-  scale_fill_manual(values = palette50) +
+  scale_fill_manual(values = palette_bact) +
   #facet_grid(~Plant, scales = "free_x", space="free_x") +
   theme(legend.key.height = unit(0.2, "cm"), legend.key.width = unit(0.3, "cm")) +
   theme(legend.title = element_text(size = 8, face = "bold"), legend.text = element_text(size = 7)) +
   theme(strip.text.x = element_text(size = 8, face = "bold")) +
-  theme(axis.text.x = element_text(size = 10, angle = 0, vjust = 0.5, hjust = 1)) +
+  theme(axis.text.x = element_text(size = 10, angle = 0, vjust = 0.5, hjust = 0.5)) +
   theme(plot.title = element_text(size = 14, hjust = 0.5)) +
   #theme(axis.ticks.x = element_blank()) +
   theme(axis.title = element_text(angle = 0, size = 8, face = "bold")) +
@@ -1139,7 +1163,7 @@ bact_clust <- hclust(dist_bact,"complete")
 plot(bact_clust)
 
 bact_dendro <- as.dendrogram(bact_clust)
-bact_dendro
+plot(bact_dendro)
 
 # mantel test between the two distances ---------------------------------------------------------------
 vegan::mantel(dist_bact, dist_91_reordered, method="spearman", permutations=9999)
@@ -1153,7 +1177,7 @@ tanglegram(plant_tree_dendro, #rank_branches() to convert in rank based tree
            highlight_branches_lwd=FALSE,
            main_left = "Plant\nPhylogeny",
            main_right = "Community\nDissimilarity",
-           main="Prokaryotes",
+           main="Bacteria",
            sub = "",
            hang = FALSE, 
            type = "r",
@@ -1193,8 +1217,463 @@ upset(otu_bact_ev_pa,
       #number.angles = 90, 
       point.size = 2, 
       line.size = 1, 
-      mainbar.y.label = "Intersections", 
+      mainbar.y.label = "OTU number", 
       sets.x.label = "OTU number", 
-      text.scale = c(1, 1, 1, 1, 1, 1),
-      empty.intersections = "on")
+      text.scale = c(1.3, 1.3, 1, 1, 1, 0.75),
+      empty.intersections = "on") -> upset_bact
+
+upset_bact
+
+
+#>>> BETA DIVERSITY ------------------------------------------------------------------------------
+library("ggrepel")
+
+sample_data(physeq_fungi_uparse_R1_ev)
+physeq_fungi_uparse_R1_ev
+
+sample_data(physeq_bact_uparse_R1_ev)
+physeq_bact_uparse_R1_ev
+
+pcoa_fungi = phyloseq::ordinate(physeq_fungi_uparse_R1_ev, method ="PCoA", distance="bray")
+
+plot_pcoa_fungi = plot_ordination(physeq_fungi_uparse_R1_ev, pcoa_fungi, shape = "Cepname", 
+                                  title = "PCoA Fungi") + 
+  theme_classic() +
+  geom_point(size=2, alpha=1, color="black") + 
+  scale_shape_manual(values=c(0:10)) +
+  geom_text_repel(aes(label=sample_data(physeq_fungi_uparse_R1_ev)$Cepname), size = 3) + 
+  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5)) +
+  theme(legend.title = element_text(size = 9, face = "bold"), legend.text = element_text(size = 8)) +
+  theme(axis.text.x = element_text(size = 10, angle = 0, vjust = 0.5, hjust = 0.5)) +
+  theme(axis.text.y = element_text(size = 10, angle = 0, vjust = 0.5, hjust = 0.5)) +
+  theme(axis.title = element_text(angle = 0, size = 10, face = "bold")) + 
+  theme(legend.title = element_text(size = 8, face = "bold"), 
+        legend.text = element_text(size = 8)) +
+  theme(legend.position="bottom") 
+
+plot_pcoa_fungi
+
+
+pcoa_bact = phyloseq::ordinate(physeq_bact_uparse_R1_ev, method ="PCoA", distance="bray")
+
+plot_pcoa_bact = plot_ordination(physeq_bact_uparse_R1_ev, pcoa_bact, shape = "Cepname",
+                                 title = "PCoA Bacteria") + 
+  theme_classic() +
+  geom_point(size=2, alpha=1, color="black") + 
+  scale_shape_manual(values=c(0:10)) +
+  geom_text_repel(aes(label=sample_data(physeq_bact_uparse_R1_ev)$Cepname), size = 3, force = 5) + 
+  theme(plot.title = element_text(size = 10, face = "bold", hjust = 0.5)) +
+  theme(legend.title = element_text(size = 9, face = "bold"), legend.text = element_text(size = 8)) +
+  theme(axis.text.x = element_text(angle = 0, size = 10, hjust = 0.5, vjust = 0.5)) +
+  theme(axis.text.y = element_text(angle = 0, size = 10, hjust = 0.5, vjust = 0.5)) +
+  theme(axis.title = element_text(angle = 0, size = 10, face = "bold")) + 
+  theme(legend.title = element_text(size = 8), 
+        legend.text = element_text(size = 8)) +
+  theme(legend.position="bottom") 
+
+plot_pcoa_bact
+
+# *** FIGURE S5 - ordinations ---------------------------------------------------------------------
+library("ggpubr")
+
+ggarrange(plot_pcoa_bact,
+          plot_pcoa_fungi,
+          labels = c("A", "B"),
+          widths = c(1,1),
+          align = "none", 
+          ncol = 2, nrow = 1,
+          common.legend = TRUE,
+          legend = c("none"))
+
+# ***********************************************************************************************---
+# ADDITIONAL CODE for REVISION ----------------------------------------------------------------------
+
+# >>> TAXONOMIC COMPOSITION FOR EACH MISEQ DATASET --------------------------------------------------
+
+# ITS dataset ---------------------------------------------------------------------------------------
+sum(taxa_sums(physeq_obj_ITS_uparse_R1))
+physeq_obj_ITS_uparse_R1
+
+sort(unique(as.data.frame(as.matrix(tax_table(physeq_obj_ITS_uparse_R1)))$Phylum))
+sort(unique(as.data.frame(as.matrix(tax_table(physeq_obj_ITS_uparse_R1)))$Class))
+sort(unique(as.data.frame(as.matrix(tax_table(physeq_obj_ITS_uparse_R1)))$Order)) # Endogonales 
+
+physeq_ITS_Endogonales <- subset_taxa(physeq_obj_ITS_uparse_R1, Order == "Endogonales")
+physeq_ITS_Endogonales
+sum(taxa_sums(physeq_ITS_Endogonales))
+sum(taxa_sums(physeq_ITS_Endogonales))*100/sum(taxa_sums(physeq_obj_ITS_uparse_R1))
+
+physeq_ITS_Basidio <- subset_taxa(physeq_obj_ITS_uparse_R1, Phylum == "Basidiomycota")
+physeq_ITS_Basidio
+sum(taxa_sums(physeq_ITS_Basidio))
+
+physeq_ITS_Asco <- subset_taxa(physeq_obj_ITS_uparse_R1, Phylum == "Ascomycota")
+physeq_ITS_Asco
+sum(taxa_sums(physeq_ITS_Asco))
+
+physeq_ITS_Glomero <- subset_taxa(physeq_obj_ITS_uparse_R1, Phylum == "Glomeromycota")
+physeq_ITS_Glomero
+sum(taxa_sums(physeq_ITS_Glomero))
+
+# SSU dataset ---------------------------------------------------------------------------------------
+sum(taxa_sums(physeq_obj_SSU_uparse_R1))
+physeq_obj_SSU_uparse_R1
+
+sort(unique(as.data.frame(as.matrix(tax_table(physeq_obj_SSU_uparse_R1)))$Phylum))
+sort(unique(as.data.frame(as.matrix(tax_table(physeq_obj_SSU_uparse_R1)))$Class))
+sort(unique(as.data.frame(as.matrix(tax_table(physeq_obj_SSU_uparse_R1)))$Order)) # Endogonales 
+
+physeq_SSU_Basidio <- subset_taxa(physeq_obj_SSU_uparse_R1, Phylum == "Basidiomycota")
+physeq_SSU_Basidio
+sum(taxa_sums(physeq_SSU_Basidio))
+
+physeq_SSU_Asco <- subset_taxa(physeq_obj_SSU_uparse_R1, Phylum == "Ascomycota")
+physeq_SSU_Asco
+sum(taxa_sums(physeq_SSU_Asco))
+
+physeq_SSU_Glomero <- subset_taxa(physeq_obj_SSU_uparse_R1, Phylum == "Glomeromycota")
+physeq_SSU_Glomero
+sum(taxa_sums(physeq_SSU_Glomero))
+
+
+# 18S dataset ---------------------------------------------------------------------------------------
+sum(taxa_sums(physeq_obj_18S_uparse_R1))
+physeq_obj_18S_uparse_R1
+
+sort(unique(as.data.frame(as.matrix(tax_table(physeq_obj_18S_uparse_R1)))$Phylum))
+sort(unique(as.data.frame(as.matrix(tax_table(physeq_obj_18S_uparse_R1)))$Class))
+sort(unique(as.data.frame(as.matrix(tax_table(physeq_obj_18S_uparse_R1)))$Order)) # Endogonales 
+
+physeq_18S_Basidio <- subset_taxa(physeq_obj_18S_uparse_R1, Phylum == "Basidiomycota")
+physeq_18S_Basidio
+sum(taxa_sums(physeq_18S_Basidio))
+
+physeq_18S_Asco <- subset_taxa(physeq_obj_18S_uparse_R1, Phylum == "Ascomycota")
+physeq_18S_Asco
+sum(taxa_sums(physeq_18S_Asco))
+
+physeq_18S_Glomero <- subset_taxa(physeq_obj_18S_uparse_R1, Phylum == "Glomeromycota")
+physeq_18S_Glomero
+sum(taxa_sums(physeq_18S_Glomero))
+
+physeq_18S_Endogonales <- subset_taxa(physeq_obj_18S_uparse_R1, Order == "Endogonales")
+physeq_18S_Endogonales
+sum(taxa_sums(physeq_18S_Endogonales))
+sum(taxa_sums(physeq_18S_Endogonales))*100/sum(taxa_sums(physeq_obj_18S_uparse_R1))
+
+# 16S dataset ---------------------------------------------------------------------------------------
+sum(taxa_sums(physeq_obj_16s_uparse))
+physeq_obj_16s_uparse
+
+otu_plastid_RDP <- subset_taxa(physeq_obj_16s_uparse, Phylum == "Cyanobacteria/Chloroplast")
+taxa_names(otu_plastid_RDP)
+
+otu_plastid_SILVA <- rownames(taxonomy_16s_uparse_SILVA[taxonomy_16s_uparse_SILVA$Class=="c:Chloroplast", ])
+otu_plastid_SILVA
+
+otu_plastid <- unique(c(taxa_names(otu_plastid_RDP), otu_plastid_SILVA))
+otu_plastid
+
+physeq_prokaryote_plastid <- otu_table(physeq_obj_16s_uparse)[otu_plastid, ]
+sum(taxa_sums(physeq_prokaryote_plastid))
+physeq_prokaryote_plastid
+rowSums(physeq_prokaryote_plastid)
+
+otu_mito <- rownames(taxonomy_16s_uparse_SILVA[taxonomy_16s_uparse_SILVA$Family=="f:Mitochondria", ])
+otu_mito
+
+physeq_prokaryote_mito <- otu_table(physeq_obj_16s_uparse)[otu_mito, ]
+sum(taxa_sums(physeq_prokaryote_mito))
+physeq_prokaryote_mito
+rowSums(physeq_prokaryote_mito)
+
+
+otu_plastid_mito <- unique(c(otu_plastid, otu_mito))
+physeq_bacteria <- otu_table(physeq_obj_16s_uparse)[!(rownames(otu_table(physeq_obj_16s_uparse))%in%otu_plastid_mito), ]
+dim(physeq_bacteria)
+physeq_bacteria
+rowSums(physeq_bacteria)
+
+
+# >>> ACCUMILATION CURVES ------------------------------------------------------------------------
+
+library("iNEXT")
+
+# 16S curves -------------------------------------------------------------------------------------
+
+df_bact <- data.frame(matrix(ncol = 1, nrow = 579))
+rownames_df_bact <- paste("OTU", 1:579, sep = "_")
+colnames(df_bact) <- "empty"
+rownames(df_bact) <- rownames_df_bact
+head(df_bact)
+
+otu_bacteria <- as.data.frame(rowSums(physeq_bacteria))
+colnames(otu_bacteria) <- "Bacteria"
+head(otu_bacteria)
+
+df_bact <- merge(df_bact, otu_bacteria, by=0, all=TRUE)
+rownames(df_bact) <- df_bact$Row.names
+df_bact <- df_bact[, c(2,3)]
+head(df_bact)
+
+
+otu_plastids <- as.data.frame(rowSums(physeq_prokaryote_plastid))
+colnames(otu_plastids) <- "Plastids"
+head(otu_plastids)
+
+df_bact <- merge(df_bact, otu_plastids, by=0, all=TRUE)
+rownames(df_bact) <- df_bact$Row.names
+df_bact <- df_bact[, c(2:4)]
+head(df_bact)
+
+
+otu_mitos <- as.data.frame(rowSums(physeq_prokaryote_mito))
+colnames(otu_mitos) <- "Mitochondria"
+head(otu_mitos)
+
+df_bact <- merge(df_bact, otu_mitos, by=0, all=TRUE)
+rownames(df_bact) <- df_bact$Row.names
+df_bact <- df_bact[, c(3:5)]
+head(df_bact)
+
+df_bact[is.na(df_bact)]<- 0
+
+inext_bact_all <- iNEXT(df_bact, q=0, datatype="abundance", endpoint = 7500000)
+
+plot_inext_16s <- ggiNEXT(inext_bact_all, type = 1, se = FALSE) +
+  theme_classic() +
+  labs(title="515F/803R", x="Number of DNA reads", y="Number of OTUs") +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5)) + 
+  theme(axis.text.x = element_text(angle = 45, size = 10, face = "bold", hjust = 0.5, vjust = 0.5)) +
+  theme(axis.text.y = element_text(angle = 0, size = 10, face = "bold", hjust = 0.5, vjust = 0.5)) +
+  theme(axis.title = element_text(angle = 0, size = 12, face = "bold")) + 
+  theme(legend.key = element_blank(), legend.title = element_text(size = 10)) +
+  theme(legend.position="right")
+
+plot_inext_16s 
+
+# plot_inext_16s$layers
+# plot_inext_16s$layers <- plot_inext_16s$layers[-1]
+
+# ITS curves -----------------------------------------------------------------------------------
+
+df_ITS <- data.frame(matrix(ncol = 1, nrow = 5679))
+rownames_df_ITS <- paste("OTU", 1:5679, sep = "_")
+colnames(df_ITS) <- "empty"
+rownames(df_ITS) <- rownames_df_ITS
+head(df_ITS)
+
+otu_ITS <- as.data.frame(rowSums(otu_table(physeq_obj_ITS_uparse_R1)))
+colnames(otu_ITS) <- "All Fungi"
+head(otu_ITS)
+
+df_ITS <- merge(df_ITS, otu_ITS, by=0, all=TRUE)
+rownames(df_ITS) <- df_ITS$Row.names
+df_ITS <- df_ITS[, c(2,3)]
+head(df_ITS)
+
+
+otu_ITS_endo <- as.data.frame(rowSums(otu_table(physeq_ITS_Endogonales)))
+colnames(otu_ITS_endo) <- "Endogonales"
+head(otu_ITS_endo)
+
+df_ITS <- merge(df_ITS, otu_ITS_endo, by=0, all=TRUE)
+rownames(df_ITS) <- df_ITS$Row.names
+df_ITS <- df_ITS[, c(2:4)]
+head(df_ITS)
+
+
+otu_ITS_basid <- as.data.frame(rowSums(otu_table(physeq_ITS_Basidio)))
+colnames(otu_ITS_basid) <- "Basidiomycota"
+head(otu_ITS_basid)
+
+df_ITS <- merge(df_ITS, otu_ITS_basid, by=0, all=TRUE)
+rownames(df_ITS) <- df_ITS$Row.names
+df_ITS <- df_ITS[, c(3:5)]
+head(df_ITS)
+
+
+otu_ITS_asco <- as.data.frame(rowSums(otu_table(physeq_ITS_Asco)))
+colnames(otu_ITS_asco) <- "Ascomycota"
+head(otu_ITS_asco)
+
+df_ITS <- merge(df_ITS, otu_ITS_asco, by=0, all=TRUE)
+rownames(df_ITS) <- df_ITS$Row.names
+df_ITS <- df_ITS[, c(2:5)]
+head(df_ITS)
+
+
+otu_ITS_glom <- as.data.frame(rowSums(otu_table(physeq_ITS_Glomero)))
+colnames(otu_ITS_glom) <- "Glomeromycotina"
+head(otu_ITS_glom)
+
+df_ITS <- merge(df_ITS, otu_ITS_glom, by=0, all=TRUE)
+rownames(df_ITS) <- df_ITS$Row.names
+df_ITS <- df_ITS[, c(2:6)]
+head(df_ITS)
+
+df_ITS[is.na(df_ITS)]<- 0
+
+inext_ITS_all <- iNEXT(df_ITS, q=0, datatype="abundance", endpoint =10000000 )
+
+plot_inext_ITS <- ggiNEXT(inext_ITS_all, type = 1, se = FALSE) +
+  theme_classic() +
+  scale_y_continuous(limits = c(0,6000), breaks=c(0, 2000, 4000, 6000)) +
+  labs(title="ITS1F/ITS4", x="Number of DNA reads", y="Number of OTUs") +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5)) + 
+  theme(axis.text.x = element_text(angle = 45, size = 10, face = "bold", hjust = 0.5, vjust = 0.5)) +
+  theme(axis.text.y = element_text(angle = 0, size = 10, face = "bold", hjust = 0.5, vjust = 0.5)) +
+  theme(axis.title = element_text(angle = 0, size = 12, face = "bold")) + 
+  theme(legend.key = element_blank(), legend.title = element_text(size = 10)) +
+  theme(legend.position="right")
+
+plot_inext_ITS 
+
+# 18S curves Endo18S-1F-NS6_f4 ----------------------------------------------
+
+df_18S <- data.frame(matrix(ncol = 1, nrow = 432))
+rownames_df_18S <- paste("OTU", 1:432, sep = "_")
+colnames(df_18S) <- "empty"
+rownames(df_18S) <- rownames_df_18S
+head(df_18S)
+
+otu_18S <- as.data.frame(rowSums(otu_table(physeq_obj_18S_uparse_R1)))
+colnames(otu_18S) <- "Endo18S"
+head(otu_18S)
+
+df_18S <- merge(df_18S, otu_18S, by=0, all=TRUE)
+rownames(df_18S) <- df_18S$Row.names
+df_18S <- df_18S[, c(2,3)]
+head(df_18S)
+
+
+otu_18S_endo <- as.data.frame(rowSums(otu_table(physeq_18S_Endogonales)))
+colnames(otu_18S_endo) <- "Endogonales"
+head(otu_18S_endo)
+
+df_18S <- merge(df_18S, otu_18S_endo, by=0, all=TRUE)
+rownames(df_18S) <- df_18S$Row.names
+df_18S <- df_18S[, c(2:4)]
+head(df_18S)
+
+
+otu_18S_basid <- as.data.frame(rowSums(otu_table(physeq_18S_Basidio)))
+colnames(otu_18S_basid) <- "Basidiomycota"
+head(otu_18S_basid)
+
+df_18S <- merge(df_18S, otu_18S_basid, by=0, all=TRUE)
+rownames(df_18S) <- df_18S$Row.names
+df_18S <- df_18S[, c(3:5)]
+head(df_18S)
+
+
+otu_18S_asco <- as.data.frame(rowSums(otu_table(physeq_18S_Asco)))
+colnames(otu_18S_asco) <- "Ascomycota"
+head(otu_18S_asco)
+
+df_18S <- merge(df_18S, otu_18S_asco, by=0, all=TRUE)
+rownames(df_18S) <- df_18S$Row.names
+df_18S <- df_18S[, c(2:5)]
+head(df_18S)
+
+
+otu_18S_glom <- as.data.frame(rowSums(otu_table(physeq_18S_Glomero)))
+colnames(otu_18S_glom) <- "Glomeromycotina"
+head(otu_18S_glom)
+
+df_18S <- merge(df_18S, otu_18S_glom, by=0, all=TRUE)
+rownames(df_18S) <- df_18S$Row.names
+df_18S <- df_18S[, c(2:6)]
+head(df_18S)
+
+df_18S[is.na(df_18S)]<- 0
+
+inext_18S_all <- iNEXT(df_18S, q=0, datatype="abundance", endpoint = 80000)
+
+plot_inext_18S <- ggiNEXT(inext_18S_all, type = 1, se = FALSE) +
+  theme_classic() +
+  labs(title="Endo18S-1F/NS6_f4", x="Number of DNA reads", y="Number of OTUs") +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5)) + 
+  theme(axis.text.x = element_text(angle = 45, size = 10, face = "bold", hjust = 0.5, vjust = 0.5)) +
+  theme(axis.text.y = element_text(angle = 0, size = 10, face = "bold", hjust = 0.5, vjust = 0.5)) +
+  theme(axis.title = element_text(angle = 0, size = 12, face = "bold")) + 
+  theme(legend.key = element_blank(), legend.title = element_text(size = 10)) +
+  theme(legend.position="right")
+
+plot_inext_18S 
+
+# SSU curves NS31_f3-AML2_f3 ----------------------------------------------
+
+df_SSU <- data.frame(matrix(ncol = 1, nrow = 248))
+rownames_df_SSU <- paste("OTU", 1:248, sep = "_")
+colnames(df_SSU) <- "empty"
+rownames(df_SSU) <- rownames_df_SSU
+head(df_SSU)
+
+otu_SSU <- as.data.frame(rowSums(otu_table(physeq_obj_SSU_uparse_R1)))
+colnames(otu_SSU) <- "18S"
+head(otu_SSU)
+
+df_SSU <- merge(df_SSU, otu_SSU, by=0, all=TRUE)
+rownames(df_SSU) <- df_SSU$Row.names
+df_SSU <- df_SSU[, c(2,3)]
+head(df_SSU)
+
+
+otu_SSU_basid <- as.data.frame(rowSums(otu_table(physeq_SSU_Basidio)))
+colnames(otu_SSU_basid) <- "Basidiomycota"
+head(otu_SSU_basid)
+
+df_SSU <- merge(df_SSU, otu_SSU_basid, by=0, all=TRUE)
+rownames(df_SSU) <- df_SSU$Row.names
+df_SSU <- df_SSU[, c(3:4)]
+head(df_SSU)
+
+
+otu_SSU_asco <- as.data.frame(rowSums(otu_table(physeq_SSU_Asco)))
+colnames(otu_SSU_asco) <- "Ascomycota"
+head(otu_SSU_asco)
+
+df_SSU <- merge(df_SSU, otu_SSU_asco, by=0, all=TRUE)
+rownames(df_SSU) <- df_SSU$Row.names
+df_SSU <- df_SSU[, c(2:4)]
+head(df_SSU)
+
+
+otu_SSU_glom <- as.data.frame(rowSums(otu_table(physeq_SSU_Glomero)))
+colnames(otu_SSU_glom) <- "Glomeromycotina"
+head(otu_SSU_glom)
+
+df_SSU <- merge(df_SSU, otu_SSU_glom, by=0, all=TRUE)
+rownames(df_SSU) <- df_SSU$Row.names
+df_SSU <- df_SSU[, c(2:5)]
+head(df_SSU)
+
+df_SSU[is.na(df_SSU)]<- 0
+
+inext_SSU_all <- iNEXT(df_SSU, q=0, datatype="abundance", endpoint = 1500)
+
+plot_inext_SSU <- ggiNEXT(inext_SSU_all, type = 1, se = FALSE) +
+  theme_classic() +
+  scale_y_continuous(limits = c(0,10), breaks=c(0, 2, 4, 6, 8, 10, 12)) +
+  labs(title="NS31_f3/AML2_f3", x="Number of DNA reads", y="Number of OTUs") +
+  theme(plot.title = element_text(size = 16, face = "bold", hjust = 0.5)) + 
+  theme(axis.text.x = element_text(angle = 45, size = 10, face = "bold", hjust = 0.5, vjust = 0.5)) +
+  theme(axis.text.y = element_text(angle = 0, size = 10, face = "bold", hjust = 0.5, vjust = 0.5)) +
+  theme(axis.title = element_text(angle = 0, size = 12, face = "bold")) + 
+  theme(legend.key = element_blank(), legend.title = element_text(size = 10)) +
+  theme(legend.position="right")
+
+plot_inext_SSU 
+
+# *** FIGURE S2 accumulation curves -------------------------------------------------------
+ggarrange(plot_inext_16s,plot_inext_ITS,
+          plot_inext_SSU,plot_inext_18S,
+          labels = c("A","B","C","D"),
+          widths = c(1,1,1,1),
+          align = "none", 
+          ncol = 2, nrow = 2,
+          common.legend = FALSE,
+          legend = c("right"))
+
 
