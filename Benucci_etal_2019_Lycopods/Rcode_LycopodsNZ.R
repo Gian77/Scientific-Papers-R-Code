@@ -1,7 +1,7 @@
 # ****************DATA ANALYSIS ********************************************************************************************* -----
 # Project name: Fungal and Bacterial Associations in Early Diverging Lycopodiaceae
 # Manuscript:   Evidence for Co-Evolutionary History of Early Diverging Lycopodiaceae Plants With Fungi But Not Bacteria
-# Authors:      Gian Maria Niccolò Benucci, Delaney Burnard, Lara D. Shepherd, Gregory Bonito,  Andrew Munkacsi
+# Authors:      Gian Maria Niccolò Benucci, Delaney Burnard, Lara D. Shepherd, Gregory Bonito, Andrew Munkacsi
 # Affiliation:  Michigan State University, Victoria University of Wellington, Museum of New Zealand Te Papa Tongarewa
 # Journal:      Forntiers in Microbiology
 # Date:         October 3, 2019
@@ -87,7 +87,7 @@ remove_taxa = function(physeq, badTaxa){
   return(prune_taxa(myTaxa, physeq))
 }
 
-# non-target taxa to be removed
+# non-target taxa to be removed - checkd using BLAST against GenBank
 bad_taxa <- c("OTU_56","OTU_4363","OTU_5787","OTU_5599","OTU_4924","OTU_4720","OTU_4382",
               "OTU_3569","OTU_3401","OTU_5811","OTU_5307","OTU_5696","OTU_5650","OTU_5302","OTU_5089",
               "OTU_4503","OTU_4258","OTU_3898","OTU_3248","OTU_3134","OTU_2943","OTU_2937","OTU_2295",
@@ -220,7 +220,7 @@ legend("bottomright", legend=metadata_fungi_ITS_uparse_R1$Cepname,
        col=metadata_fungi_ITS_uparse_R1$color, lty=1, cex=0.8, box.lty=1) #box.lty=0 remove the legend border
 
 # >>> DATA RAREFACTION -------------------------------------------------------------------------------
-set.seed(2018)
+set.seed(2019)
 
 min(sample_sums(physeq_obj_ITS_uparse_R1_filt))
 data.frame(colSums(otu_table(physeq_obj_ITS_uparse_R1_filt)))
@@ -370,26 +370,33 @@ metadata_fungi_ev$Cepname
 plot(plant_tree_dendro)
 
 # *** FIGURE 4A - fungi ITS tanglegram ----------------------------------------------------------------
-tanglegram(plant_tree_dendro, #rank_branches() to convert in rank based tree
-           fungi_dendro,
-           common_subtrees_color_lines=TRUE, 
-           highlight_distinct_edges=FALSE, 
-           highlight_branches_lwd=FALSE,
-           main_left = "Plant\nPhylogeny",
-           main_right = "Community\nDissimilarity",
-           main="Fungi",
-           sub = "",
-           hang = FALSE, 
-           type = "r",
-           margin_inner=4.5,
-           lwd=2,
-           lab.cex = 1,
-           cex_main = 1.2,
-           cex_sub=1,
-           center = FALSE)
+
+dend_list <- dendlist(as.dendrogram(plant_tree_dendro), fungi_dendro)
+
+# untangling the trees before calculating the entanglemnt 
+dend_list_unt<- dend_list %>% untangle(method = "random") 
+dend_list_unt
+
+dend_list_unt %>% tanglegram(common_subtrees_color_lines=TRUE, 
+             common_subtrees_color_branches = TRUE,
+             highlight_distinct_edges=FALSE, 
+             highlight_branches_lwd=FALSE,
+             main_left = "Plant\nPhylogeny",
+             main_right = "Community\nDissimilarity",
+             main="Fungi",
+             sub = paste("entanglement =", round(entanglement(dend_list_unt,
+                              L=1, leaves_matching_method = "labels"), 2)),
+             hang = FALSE, 
+             type = "r",
+             margin_inner=4.5,
+             lwd=2.5,
+             lab.cex = 1,
+             cex_main = 1.2,
+             cex_sub=1,
+             center = FALSE)
 
 # calculating entanglement ----------------------------------------------------------------------------
-entanglement(plant_tree_dendro,fungi_dendro, L = 1, leaves_matching_method = "labels")
+entanglement(dend_list_unt, L=1, leaves_matching_method = "labels")
 
 # >>> HEATMAP TREES -----------------------------------------------------------------------------------
 library("metacoder")
@@ -1170,27 +1177,32 @@ vegan::mantel(dist_bact, dist_91_reordered, method="spearman", permutations=9999
 
 
 # *** FIGURE 4B - bacteria tanglegram -----------------------------------------------------------------
-tanglegram(plant_tree_dendro, #rank_branches() to convert in rank based tree
-           bact_dendro,
-           common_subtrees_color_lines=TRUE, 
-           highlight_distinct_edges=FALSE, 
-           highlight_branches_lwd=FALSE,
-           main_left = "Plant\nPhylogeny",
-           main_right = "Community\nDissimilarity",
-           main="Bacteria",
-           sub = "",
-           hang = FALSE, 
-           type = "r",
-           margin_inner=4.5,
-           lwd=2,
-           lab.cex = 1,
-           cex_main = 1.2,
-           cex_sub=1,
-           center = FALSE)
+dend_list_b <- dendlist(as.dendrogram(plant_tree_dendro), bact_dendro)
+dend_list_b
+
+dend_list_bunt<- dend_list_b %>% untangle(method = "random") 
+dend_list_bunt
+
+dend_list_bunt %>% tanglegram(common_subtrees_color_lines=TRUE,
+             common_subtrees_color_branches = TRUE,
+             highlight_distinct_edges=FALSE, 
+             highlight_branches_lwd=FALSE,
+             main_left = "Plant\nPhylogeny",
+             main_right = "Community\nDissimilarity",
+             main="Prokaryotes",
+             sub = paste("entanglement =", round(entanglement(dend_list_bunt, 
+                                L=1, leaves_matching_method = "labels"), 2)),
+             hang = FALSE, 
+             type = "r",
+             margin_inner=4.5,
+             lwd=2,
+             lab.cex = 1,
+             cex_main = 1.2,
+             cex_sub=1,
+             center = FALSE)
 
 # calculating entanglement ----------------------------------------------------------------------------
-entanglement(plant_tree_dendro, bact_dendro, L = 1, leaves_matching_method = "labels")
-
+entanglement(dend_list_bunt, L=1, leaves_matching_method = "labels")
 
 # UPSET R ---------------------------------------------------------------------------------------------
 library("UpSetR")
