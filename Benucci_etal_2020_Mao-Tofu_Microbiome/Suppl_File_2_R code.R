@@ -1,10 +1,10 @@
 # ************ DATA ANALYSIS ***************************************** ------------------------
-# Project name: hairy tofu 
+# Project name: hairy tofu - Mao tofu Microbiome
 # Manuscript:   
-# Authors:      
+# Authors:      Benucci GMN, Wang X, ..., Bonito G
 # Affiliation:  Michigan State University
-# Journal:      
-# Date:         February 6, 2020
+# Journal:      Food Microbiology
+# Date:         February 6, 2021
 # ******************************************************************** ------------------------
 
 # WORKING ENVIRONMENT SETUP -------------------------------------------------------------------
