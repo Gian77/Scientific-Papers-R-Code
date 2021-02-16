@@ -1,6 +1,6 @@
-# R-Code for submitted/published papers
+## R-Code for submitted/published papers
 
-This repository contains the data and R code that was used in analyses in my submitted to a journal or already published in jiunral papers.
+## This repository contains **data** and **R code** used for the data analyses included in my papers, both submitted to a journal or already published.
 
 
 
