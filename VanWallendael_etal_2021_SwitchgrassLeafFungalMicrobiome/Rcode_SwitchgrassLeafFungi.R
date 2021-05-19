@@ -3,11 +3,11 @@
 # Manuscript:   Host genetic control of succession in the switchgrass leaf fungal microbiome
 # Authors:      VanWallendael A, Benucci GMN, ..., Lowry DB.
 # Affiliation:  Michigan State University
-# Journal:      Nature Eco Evo
+# Journal:      Nature Comm.
 # Date:         March 12, 2021
 #
 # R Code:       Benucci GMN
-# Please contact <gian.benucci@gmail.com> before using this code. 
+# Please contact <gian.benucci@gmail.com> if you intend using this code. 
 # ******************************************************************** --------------------------------------
 
 # loading required packages ---------------------------------------------------------------------------------
