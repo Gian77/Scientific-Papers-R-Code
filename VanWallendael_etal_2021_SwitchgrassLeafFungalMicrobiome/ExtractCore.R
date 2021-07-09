@@ -217,7 +217,7 @@ ExtractCore <- function(physeq, Var, method, Group=NULL, Level=NULL){
   else{
     lastCall <-
       as.numeric(as.character(dplyr::last(
-        subset(BC_ranked, IncreaseBC >= 1.03)$rank)))
+        subset(BC_ranked, IncreaseBC >= 1.02)$rank)))
     # lastCall <- last(as.numeric(BC_ranked$rank[(BC_ranked$IncreaseBC>=1.02)]))
     core_otus <- otu_ranked$otu[1:lastCall]
     core_otus %T>% print()
