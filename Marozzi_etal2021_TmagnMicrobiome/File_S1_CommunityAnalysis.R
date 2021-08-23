@@ -2583,10 +2583,7 @@ p_bar_fungi_sp
 # We can look at this later on, though...
 
 
-
-
 # ***************************************************************************----------------------
-
 
 
 # NEW ***************************************_------------------------------------------------------
@@ -2663,20 +2660,9 @@ head(df_its_heat)
 (df_its_heat$'in'* 100)/36
 
 
-
-
-
-
 taxa_names_its -> df_its_heat
 df_its_heat$n_obs_its <- n_obs_its$n_obs_its
 df_its_heat
-
-
-
-
-
-
-
 
 
 identical(rownames(df_its_heat), rownames(tax_prop_its))
@@ -2691,12 +2677,6 @@ df_its_heat
 colnames(df_its_heat) <- c("OTU_number", "Taxon", "Taxon_id", "In", "Out")
 df_its_heat <- df_its_heat[, c(3,2,1,4,5)]
 head(df_its_heat)
-
-
-
-
-
-
 
 
 
@@ -2726,8 +2706,6 @@ head(df_its_heat)
 
 
 
-
-
 # ----------------------------
 
 taxonomy_ITS_uparse_R1
@@ -2742,8 +2720,6 @@ taxa_ITS[taxa_ITS$Kingdom=="Plantae",]
 otu_ITS[rownames(otu_ITS)=="FOTU_173",]
 metadata_ITS[rownames(metadata_ITS)=="sample74",]
 
-
-
 #taxa_16s -> old_taxa_16s
 
 taxonomy_16s_uparse_R1
@@ -2751,8 +2727,4 @@ rownames(taxonomy_16s_uparse_R1) <- paste("B", rownames(taxonomy_16s_uparse_R1),
 taxonomy_16s_uparse_R1[rownames(taxa_16s), ] -> new_taxa_16s
 identical(rownames(new_taxa_16s), rownames(taxa_16s))
 new_taxa_16s -> taxa_16s
-
-
-
-
 
