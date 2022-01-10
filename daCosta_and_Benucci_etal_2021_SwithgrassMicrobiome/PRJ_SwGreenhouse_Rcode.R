@@ -1,6 +1,6 @@
 # Project: GLBRC greenhouse Pedro 
 
-# Aithors: Chou Ming-Yi, Benucci GMN, Beschoren da Costa P, Bonito G (preliminary order)
+# Aithors: Benucci GMN, Beschoren da Costa P, Chou M-Y, ..., Bonito G
 # Institution: Michigan State University
 
 # WORKING ENVIRONMENT SETUP --------------------------------------------------------------------------------
