@@ -1,7 +1,7 @@
 # ************ DATA ANALYSIS ************ -----------------------------------------------------
-# Project name:   
+# Project name: Fungal and Bacterial microbiome of swithgrass  
 # Manuscript:   Fungal and bacterial community variation in switchgrass soils and roots
-# Authors:      Lukas, Nico, ..., Sarah
+# Authors:      Lukas, ..., Sarah
 # Affiliation:  GLBRC - Michigan State University
 # Journal:      
 # Date:         February 7, 2022
