@@ -1,5 +1,5 @@
 # *** Script for data analyses ******************************** ----------------
-# Manuscript:   Soil microbial communities in detritosphere hot-spots are driven by soil pores and water contents
+# Manuscript:   Soil microbiome in detritosphere hot-spots are driven by soil pores and water contents
 # Authors:      ...
 # Affiliation:  Michigan State University
 # Journal:      ... 
