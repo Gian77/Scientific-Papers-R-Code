@@ -1,4 +1,4 @@
-### Code to reproduce the random forest models published in:
+### R Code and datasets to reproduce the the analysis published in:
 
 ## Giorgio M, Niccolò BGM, Benedetta T, Luisa M, Leonardo BF, Gregory B, Pietro B, Alberto A, Domizia D, Emidio A. Fungal and Bacterial Diversity in the Tuber magnatum Ecosystem and Microbiome. Microb Ecol. 2023 Feb;85(2):508-521. doi: 10.1007/s00248-021-01950-1. Epub 2022 Mar 2. Erratum in: Microb Ecol. 2022 Apr 11;: PMID: 35237850.
 
