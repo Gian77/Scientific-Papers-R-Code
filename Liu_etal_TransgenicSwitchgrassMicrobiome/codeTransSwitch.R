@@ -101,23 +101,7 @@ themePlot <- function(){
 # ***********************************************-------------------------------
 # Import fungal datasets -------------------------------------------------------
 
-fungi_table <- data.frame(data.table::fread("Original_MingYi-fungi/PR_ITS_asv_new.txt", sep="\t"), row.names=1)
-dim(fungi_table)
-fungi_table[1:6, 1:50]
-
-fungi_metadata <- as.data.frame(
-  read.delim("Original_MingYi-fungi/Metadata_Transgenic_correct.txt", header=TRUE, row.names=1, sep="\t"))
-dim(fungi_metadata)
-fungi_metadata
-
-fungi_taxonomy <- as.data.frame(
-  read.delim("Original_MingYi-fungi/constax_taxonomy_ITS.txt", header=TRUE, row.names=1, sep="\t"))
-dim(fungi_taxonomy)
-fungi_taxonomy[1:6,]
-
-fungi_DNAseq <- read_fasta("Original_MingYi-fungi/ITS_ASVs_filtered_new.fasta") %>% 
-  dplyr::select("ASV_ID"=2, "DNA_seq"=1)
-dim(fungi_DNAseq)
+load("fungi_data.Rdata")
 
 fungi_table_filt <-
   fungi_table %>% 
@@ -394,15 +378,7 @@ fungi_taxonomy_new <-
   filter(!ASV_ID%in%c("ASV_1267","ASV_1065","ASV_536"))
 
 # Import bacteria datasets -----------------------------------------------------
-bact_table <- data.frame(data.table::fread("Original_Ming-Yi_bacteria/PR_16S_asv.txt", sep=","), row.names=1)
-dim(bact_table)
-head(bact_table)
-
-bact_metadata <- read.csv("Original_Ming-Yi_bacteria/Metadata_Transgenic_bacteria.csv", header=T, row.names=1)
-dim(bact_metadata)
-
-bact_taxonomy <- read.delim("Original_Ming-Yi_bacteria/constax_taxonomy.txt", header=TRUE, row.names=1, sep="\t")
-dim(bact_taxonomy)
+load("bacteria_data.Rdata")
 
 bact_table_filt <-
   bact_table %>%
