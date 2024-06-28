@@ -1,4 +1,4 @@
-## Data and code to reproduce the analyses performed in:
+# Data and code to reproduce the analyses performed in:
 
 ## Investigating the Influence of Drought on the Assembly of a Designed Root Microbial Community in Arabidopsis
 
